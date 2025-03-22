@@ -1,2 +1,2 @@
-# GUESS-NUMBER-GAME
+# NUMBER-GUESSING-GAME
 project that build my basics

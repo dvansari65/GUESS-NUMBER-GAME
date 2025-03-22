@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Make the font more modern */
+            background-color: #e0f7e0; /* Light green background for the whole page */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+        }
+    
+        #game {
+            width: 350px; /* Set a more fitting width */
+            padding: 20px; /* Add space inside the box */
+            border: 2px solid #81c784; /* Light green border */
+            border-radius: 10px; /* Round the corners for a soft look */
+            background-color: #ffffff; /* White background for the game container */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+        }
+    
+        h2, h3 {
+            text-align: center;
+            color: #388e3c; /* Dark green color for the headings */
+        }
+    
+        p {
+            font-size: 16px;
+            color: #555555; /* Dark gray text for better readability */
+            text-align: center;
+        }
+    
+        label {
+            font-size: 18px;
+            color: #388e3c; /* Dark green for the label */
+        }
+    
+        input[type="number"] {
+            width: 100%; /* Make input field take full width */
+            padding: 8px;
+            margin-top: 10px;
+            border: 2px solid #81c784;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+    
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #81c784; /* Light green button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        button:hover {
+            background-color: #66bb6a; /* Slightly darker green on hover */
+        }
+    
+        #resultparas {
+            text-align: center;
+        }
+    
+        .guesses {
+            color: #388e3c; /* Dark green color for guesses */
+            font-weight: bold;
+        }
+    
+        .remain {
+            font-weight: bold;
+            color: #f44336; /* Red color for remaining attempts */
+        }
+    
+        .loworhigh {
+            color: #f44336; /* Red color for feedback messages */
+            font-size: 18px;
+            font-weight: bold;
+        }
+    
+        .button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        #newgame {
+            font-size: 18px;
+            color: #388e3c;
+            cursor: pointer;
+        }
+    
+        #newgame:hover {
+            color: #66bb6a;
+        }
+    </style>
+    
+</head>
+<body style="background-color: lightblue;">
+    <div id="game">
+        <p><h2>NUMBER GUESSING GAME !!!</h2></p>
+        <P><H3>YOU HAVE TO GUESS NUMBER BETWEEN 1 TO 100</H3></P>
+        <P>You have 10 attemps</P>
+        <form>
+            <label for ="number"> number</label>
+            <input type="number" id="integer" placeholder="enter number " required>
+            <BR><BR>
+            <button type="submit" class ="submit" id="subt" placeholder="SUBMIT">submit</button> 
+            
+        </form>
+        <DIV id = "resultparas">
+            <p>attempted:<span class="guesses"></span></p>
+            <p>remaining attempts:<span class="remain">10</span></p>
+            <p class="loworhigh"></p>
+        </DIV>
+    </div>
+    
+</body>
+<script>
+    let userinput = document.querySelector("#integer")
+    let randomnumber=parseInt((Math.random()*10+1)*10)
+    const submit = document.querySelector(".submit")
+    let resultparas = document.querySelector("#resultparas")
+    let remain = document.querySelector(".remain")
+    let  guessslot= document.querySelector(".guesses")
+    let loworhigh= document.querySelector(".loworhigh")
+
+    let prevguess = []
+    let numofguess  =  1
+    let playgame = true
+    
+
+
+    if(playgame){submit.addEventListener("click",function(e){
+        e.preventDefault()
+       guess =  parseInt(userinput.value)
+       if (isNaN(guess) || userinput.value === "") {
+                displaymsg("Enter some number");
+            } else {
+                validateguess(guess);
+            }
+       
+       })};
+
+    function validateguess(guess){
+        
+        if(guess>100){
+                displaymsg("enter a valid number");
+                
+        }else if(guess<1){
+                displaymsg("enter a valid number ");
+    
+        }else{ prevguess.push(guess)
+                   displayguess(guess)
+                   checkguess(guess)
+                    if(numofguess===11){
+                    
+                    displaymsg(`game over and random number was ${randomnumber}`)
+
+
+                }
+            }
+        }
+    
+     function checkguess(guess){
+        if(guess===randomnumber){
+            displaymsg("you guessed it right");
+            
+        }else if (guess > randomnumber){
+            displaymsg("number is too high");
+            
+        }else if(guess<randomnumber) {
+                displaymsg("number is low")
+        }
+    }
+    function displayguess(guess){
+        userinput.value =""
+        
+        guessslot.innerHTML=prevguess.join(", ")
+        numofguess++
+        
+        remain.innerHTML=`${11-numofguess}`
+        
+    }
+
+    function displaymsg(message){
+        loworhigh.innerHTML= `${message}`
+    }
+    function endgame(){
+        userinput.value=""
+        playgame=false
+        userinput.setAttribute("disabled", "");
+        let p = document.createElement("p")
+        p.classList.add("button")
+        p.innerHTML="<h2 id = newgame>start new game</>"
+        resultparas.appendChild(p)
+        newgame();
+        
+
+    }
+    function newgame(){
+        const startgame = document.querySelector("#newgame")
+        startgame.addEventListener("click",function(e){
+            userinput.removeAttribute("disabled")
+            prevguess =[]
+            numofguess = 1
+            remain.innerHTML =`${11-numofguess}`
+            guessslot.innerHTML=""
+            resultparas.removeChild(p)
+            playgame=true
+            
+        })
+
+    }
+</script>
+</html>
